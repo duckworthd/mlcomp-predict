@@ -1,16 +1,18 @@
 function [samples, classes, weights, mean, covariance] = generate_class(dim, ...
-    num_samples, num_classes, cov_density, sample_density, weight_density)
+    num_samples, num_classes, density)
 % GENERATE_CLASS: Generate multilabel classification sample points
 %   based on randomly sampled linear weights
 %INPUT
 % dim = dimension of input vector
 % num_samples = number of samples to generate
 % num_classes = number of unique classes
-% cov_density = a number 0 to 1 specifying roughly what percentage of entries
-%   in the covariance matrix generating samples are non-zero
-% sample_density = percentage of non-zero entries in samples
-% weight_density = a number 0 to 1 specifying what percentage of weights are
-%   non-zero per weight vector
+% density = a struct describing what percentage of terms should be non-zero
+%       in each respective variable
+%   density.cov = a number 0 to 1 specifying roughly what percentage of entries
+%     in the covariance matrix generating samples are non-zero
+%   density.sample = percentage of non-zero entries in samples
+%   density.weight = a number 0 to 1 specifying what percentage of weights are
+%     non-zero per weight vector
 %OUTPUT
 % samples = each row is a sample of dimension 'dim'
 % classes = each element is the class label corresponding to the 'samples'
@@ -21,29 +23,59 @@ function [samples, classes, weights, mean, covariance] = generate_class(dim, ...
 % mean = mean of samples
 % covariance = covariance matrix for samples
 
+%% Read out optional args
+cov_density = 1;
+sample_density = 1;
+weight_density = 1;
+if isfield(density, 'cov')
+    cov_density = density.cov;
+end
+if isfield(density, 'sample')
+    sample_density = density.sample;
+end
+if isfield(density, 'weight')
+    weight_density = density.weight;
+end
+
 %% Choose parameters for Gaussian
-S = full(sprandsym(dim,cov_density,rand(dim,1))); 
+fprintf('Generating parameters for samples...\n');
+% S = sprandsym(dim,cov_density,rand(dim,1)); 
+S = rand(dim,dim);
+S = S'*S;
 mean = randn(dim,1);
 
 %% Sample Multivariate Gaussian
+fprintf('Generating samples...\n');
 X = mvnrnd(mean, S, num_samples);
 
-while nnz(X)/prod(size(X)) > sample_density
-    % Keep on zeroing out non-zero entries until percentage of non-zero
-    % elements is less than sample_density
-    indices = find(X);
-    to_remove = indices( randi(length(indices)) );
-    X(to_remove) = 0;
+parfor i=1:num_samples
+    sample = X(i,:);
+    for j=1:(dim - sample_density*dim)
+        indices = find(sample);
+        to_remove = indices( randi( length( indices ) ) );
+        sample(to_remove) = 0;
+    end
+    X(i,:) = sample;
 end
+% while nnz(X)/numel(X) > sample_density
+%     % Keep on zeroing out non-zero entries until percentage of non-zero
+%     % elements is less than sample_density
+%     indices = find(X);
+%     to_remove = indices( randi(length(indices)) );
+%     X(to_remove) = 0;
+% end
 
 %% Sample Weight Vectors
+fprintf('Generating weights...\n');
 W = sprandn(dim, num_classes, weight_density);
 
 %% Generate Class Labels
+fprintf('Generating class labels...\n');
 C = X*W;
-[trash, classes] = max(C,[],2);
+[~, classes] = max(C,[],2);
 
 %% Set results
+fprintf('done\n');
 samples = X;
 classes = classes;
 weights = W;
