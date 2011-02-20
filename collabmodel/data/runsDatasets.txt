@@ -1,0 +1,10 @@
+MulticlassClassification 738
+BinaryClassification 735
+BanditMulticlass 734
+CollaborativeFiltering 736
+DocumentClassification 737
+Regression 740
+OnlineLearningMulticlass 739
+SemiSupervised none
+SequenceTagging 741
+WordSegmentation 742
