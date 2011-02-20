@@ -16,6 +16,7 @@ programs = []
 datasets = []
 
 while runID <= 11673:
+    eRate = 1.0
     #Extract html from run address
     address = "http://mlcomp.org/runs/" + str(runID)
     html = urllib2.urlopen(address).read()
@@ -28,7 +29,6 @@ while runID <= 11673:
     programlinks = soup.findAll(attrs={"type" : "Program"})
     dataset1 = re.sub('\s+', '-', datasetlinks[0].text)
     dataset2 = re.sub(',', '', dataset1)
-    print dataset2
     if not programlinks[0].text in programs:
         programs += [programlinks[0].text]
     if not dataset2 in datasets:
