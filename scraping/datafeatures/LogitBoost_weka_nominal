@@ -1,4 +1,4 @@
-LogitBoost_weka_nominalthyroid-allrep	2800	40	4	0.0113168724279835
+thyroid-allrep	2800	40	4	0.0113168724279835
 isolet	6238	617	26	failed
 random	1791	15	16	0.875
 new york traffic 2008 all hours 7 days more readings	257	1779	7	0.181818181818182

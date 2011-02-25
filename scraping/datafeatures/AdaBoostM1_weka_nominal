@@ -1,4 +1,4 @@
-AdaBoostM1_weka_nominalsonar	146	60	2	failed
+sonar	146	60	2	failed
 thyroid-allrep	2800	40	4	failed
 voting-records	305	16	2	failed
 isolet	6238	617	26	0.923027581783194

@@ -1,4 +1,4 @@
-FilteredClassifier_weka_nominalsonar	146	60	2	0.354838709677419
+sonar	146	60	2	0.354838709677419
 thyroid-allrep	2800	40	4	0.01440329218107
 voting-records	305	16	2	failed
 isolet	6238	617	26	failed
