@@ -46,6 +46,7 @@ mean = randn(dim,1);
 
 %% Sample Multivariate Gaussian
 fprintf('Generating samples...\n');
+% each row is a sample
 X = mvnrnd(mean, S, num_samples);
 
 parfor i=1:num_samples
@@ -67,7 +68,14 @@ end
 
 %% Sample Weight Vectors
 fprintf('Generating weights...\n');
-W = sprandn(dim, num_classes, weight_density);
+% W = sprandn(dim, num_classes, weight_density);
+
+% each column is a class
+W = randn(dim, num_classes);
+
+for j=1:(1-weight_density)*dim
+    W(randi(1,dim),:) = 0;
+end
 
 %% Generate Class Labels
 fprintf('Generating class labels...\n');
